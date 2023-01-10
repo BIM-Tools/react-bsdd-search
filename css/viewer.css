@@ -7,4 +7,6 @@ body {
   background-repeat: no-repeat;
   background-size: auto;
   color: white;
+  font-size: small;
+  font-family: monospace;
 }

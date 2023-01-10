@@ -23,6 +23,7 @@
   <script type="module">
     function callback(data) {
       console.log(data);
+      document.getElementById("viewer").innerHTML = "<pre>" + JSON.stringify(data, undefined, 2) + "</pre>";
     }
 
     const config = {
