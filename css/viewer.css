@@ -5,7 +5,8 @@ body {
 #viewer {
   background: url("../images/viewer.png");
   background-repeat: no-repeat;
-  background-size: auto;
+  background-size: auto 100%;
+  background-color: black;
   color: white;
   font-size: small;
   font-family: monospace;
