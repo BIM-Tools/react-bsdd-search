@@ -1,30 +1,31 @@
+import { useRecoilValue } from 'recoil'
 import { ClassificationContractV4, DomainContractV3 } from './BsddApi'
+import { classificationsState, domainsState, propertySetsState } from './BsddAtoms'
 
 interface Props {
   callback: (value: any) => void
-  domains: { [id: string]: DomainContractV3 }
-  classifications: ClassificationContractV4[]
-  propertySets: { [id: string]: IfcPropertySet }
 }
 
 function Apply(props: Props) {
-  // const [selectOptions, setSelectOptions] = useState<any[]>([])
+  const domains: { [id: string]: DomainContractV3 } = useRecoilValue(domainsState)
+  const classifications: ClassificationContractV4[] = useRecoilValue(classificationsState)
+  const propertySets: { [id: string]: IfcPropertySet } = useRecoilValue(propertySetsState)
 
-  function getIfcEntity(): IfcEntity {
+  function getIfcEntity(propertySets: { [id: string]: IfcPropertySet }): IfcEntity {
     const ifc: IfcEntity = {}
-    if (props.classifications.length) {
-      ifc.hasAssociations = props.classifications.map((classification) => getIfcClassificationReference(classification))
+    if (classifications.length) {
+      ifc.hasAssociations = classifications.map((classification) => getIfcClassificationReference(classification))
     }
-    const propertySets: IfcPropertySet[] = Object.values(props.propertySets)
-    if (propertySets.length) {
-      ifc.isDefinedBy = propertySets
+    const ifcPropertySets: IfcPropertySet[] = Object.values(propertySets)
+    if (ifcPropertySets.length) {
+      ifc.isDefinedBy = ifcPropertySets
     }
     return ifc
   }
 
   function getIfcClassification(domainNamespaceUri: string): IfcClassification | null {
-    if (domainNamespaceUri in props.domains) {
-      const domain: DomainContractV3 = props.domains[domainNamespaceUri]
+    if (domainNamespaceUri in domains) {
+      const domain: DomainContractV3 = domains[domainNamespaceUri]
       if (domain) {
         const ifc: IfcClassification = {
           type: 'IfcClassification',
@@ -57,7 +58,7 @@ function Apply(props: Props) {
   }
 
   const handleOnChange = () => {
-    props.callback(getIfcEntity())
+    props.callback(getIfcEntity(propertySets))
   }
 
   return (

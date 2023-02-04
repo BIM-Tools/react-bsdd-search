@@ -1,5 +1,7 @@
 import AsyncSelect from 'react-select/async'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Api } from './BsddApi'
+import { activeClassificationUriState, activeDomainsState } from './BsddAtoms'
 
 const api = new Api()
 api.baseUrl = 'https://test.bsdd.buildingsmart.org'
@@ -9,19 +11,17 @@ interface Option {
   value: string
 }
 
-interface Props {
-  activeDomains: Option[]
-  setActiveClassificationUri: (value: string) => void
-}
-
 //https://medium.com/how-to-react/react-select-dropdown-tutorial-using-react-select-51664ab8b6f3
-function Search(props: Props) {
+function Search() {
+  const activeDomains: Option[] = useRecoilValue(activeDomainsState)
+  const setActiveClassificationUri = useSetRecoilState(activeClassificationUriState)
+
   const loadOptions = (inputValue: string, callback: (options: any[]) => void) => {
     if (inputValue.length > 2) {
       const queryParameters = {
         SearchText: inputValue,
         TypeFilter: 'Classifications',
-        DomainNamespaceUris: props.activeDomains.map((domain) => domain.value),
+        DomainNamespaceUris: activeDomains.map((domain) => domain.value),
       }
       api.api.textSearchListOpenV5List(queryParameters).then((response) => {
         if (response.data.classifications) {
@@ -39,7 +39,7 @@ function Search(props: Props) {
   }
 
   const handleOnChange = (e: any) => {
-    props.setActiveClassificationUri(e.value)
+    setActiveClassificationUri(e.value)
   }
 
   return (

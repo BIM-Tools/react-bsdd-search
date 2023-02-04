@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
-import { Api, DomainContractV3 } from './BsddApi'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { Api } from './BsddApi'
+import { activeDomainsState, domainsState } from './BsddAtoms'
 
 const api = new Api()
 api.baseUrl = 'https://test.bsdd.buildingsmart.org'
@@ -10,14 +12,12 @@ interface Option {
   value: string
 }
 
-interface Props {
-  activeDomains: Option[]
-  setActiveDomains: (value: Option[]) => void
-  setDomains: (value: { [id: string]: DomainContractV3 }) => void
-}
+export default function SelectDomains() {
+  const activeDomains: Option[] = useRecoilValue(activeDomainsState)
+  const setDomains = useSetRecoilState(domainsState)
+  const setActiveDomains = useSetRecoilState(activeDomainsState)
 
-export default function SelectDomains(props: Props) {
-  const [selectOptions, setSelectOptions] = useState<any[]>(props.activeDomains)
+  const [selectOptions, setSelectOptions] = useState<any[]>(activeDomains)
 
   useEffect(() => {
     api.api.domainV3List().then((response) => {
@@ -28,7 +28,7 @@ export default function SelectDomains(props: Props) {
             label: domain.name,
           })),
         )
-        props.setDomains(
+        setDomains(
           response.data.reduce((accumulator, domain) => {
             if (domain.namespaceUri) {
               return { ...accumulator, [domain.namespaceUri]: domain }
@@ -38,10 +38,10 @@ export default function SelectDomains(props: Props) {
         )
       }
     })
-  }, [setSelectOptions, props.setDomains])
+  }, [setSelectOptions, setDomains])
 
   const handleOnChange = (e: any) => {
-    props.setActiveDomains(e.map((option: Option) => option))
+    setActiveDomains(e.map((option: Option) => option))
   }
 
   return (
@@ -53,7 +53,7 @@ export default function SelectDomains(props: Props) {
       classNamePrefix='select'
       placeholder={<div> filter domains...</div>}
       onChange={(e) => handleOnChange(e)}
-      defaultValue={props.activeDomains.map((domain) => domain)}
+      defaultValue={activeDomains.map((domain) => domain)}
     />
   )
 }

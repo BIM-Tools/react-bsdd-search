@@ -1,18 +1,18 @@
 import { useState, useEffect, Children } from 'react'
 import { Form } from 'react-bootstrap'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Api, ClassificationContractV4, DomainContractV3 } from './BsddApi'
+import { activeClassificationUriState, classificationsState, domainsState } from './BsddAtoms'
 
 const api = new Api()
 api.baseUrl = 'https://test.bsdd.buildingsmart.org'
 
-interface Props {
-  activeClassificationUri: string | undefined
-  classifications: ClassificationContractV4[]
-  setClassifications: (value: ClassificationContractV4[]) => void
-  domains: { [id: string]: DomainContractV3 }
-}
+function Classifications() {
+  const setClassifications = useSetRecoilState(classificationsState)
+  const classifications: ClassificationContractV4[] = useRecoilValue(classificationsState)
+  const domains: { [id: string]: DomainContractV3 } = useRecoilValue(domainsState)
+  const activeClassificationUri: string = useRecoilValue(activeClassificationUriState)
 
-function Classifications(props: Props) {
   const [classificationCount, setClassificationCount] = useState<number>(0)
   const [classificationUris, setClassificationUris] = useState<{
     [id: string]: Promise<ClassificationContractV4 | null>
@@ -53,23 +53,23 @@ function Classifications(props: Props) {
   }
   function getClassificationDomainName(classification: ClassificationContractV4): string {
     if (classification && classification.domainNamespaceUri) {
-      return props.domains[classification.domainNamespaceUri].name
+      return domains[classification.domainNamespaceUri].name
     }
     return 'unknown'
   }
 
   useEffect(() => {
     setClassificationCount(0)
-    if (props.activeClassificationUri) {
+    if (activeClassificationUri) {
       const initialClassificationUris: {
         [id: string]: Promise<ClassificationContractV4 | null>
       } = {}
-      if (props.activeClassificationUri) {
-        initialClassificationUris[props.activeClassificationUri] = getClassification(props.activeClassificationUri)
+      if (activeClassificationUri) {
+        initialClassificationUris[activeClassificationUri] = getClassification(activeClassificationUri)
       }
       setClassificationUris(initialClassificationUris)
     }
-  }, [props.activeClassificationUri])
+  }, [activeClassificationUri])
 
   useEffect(() => {
     setClassificationCount(Object.keys(classificationUris).length)
@@ -107,14 +107,14 @@ function Classifications(props: Props) {
         }
         return 'unknown'
       })
-      props.setClassifications(r)
+      setClassifications(r)
     })
   }, [classificationUris])
 
   return (
     <div>
       {Children.toArray(
-        props.classifications.map((classification, index) => (
+        classifications.map((classification, index) => (
           <Form.Group className='mb-3 row' key={index}>
             <Form.Label className='col-sm-5 col-form-label'>{getClassificationDomainName(classification)}</Form.Label>
             <div className='col-sm-7'>
