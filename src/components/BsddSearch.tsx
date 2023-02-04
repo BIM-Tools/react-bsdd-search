@@ -24,7 +24,6 @@ interface Props {
 
 function BsddSearch(props: Props) {
   const [activeClassificationUri, setActiveClassificationUri] = useState<string>()
-  const [recursiveMode, setRecursiveMode] = useState<boolean>(false)
   const [activeDomains, setActiveDomains] = useState<Option[]>(getDefaultDomains())
   const [domains, setDomains] = useState<{ [id: string]: DomainContractV3 }>({})
   const [classifications, setClassifications] = useState<ClassificationContractV4[]>([])
@@ -57,7 +56,7 @@ function BsddSearch(props: Props) {
               />
             </Col>
             <Col>
-              <RecursiveMode recursiveMode={recursiveMode} setRecursiveMode={setRecursiveMode} />
+              <RecursiveMode />
             </Col>
           </Row>
 
@@ -68,7 +67,6 @@ function BsddSearch(props: Props) {
                 <Accordion.Body>
                   <Classifications
                     activeClassificationUri={activeClassificationUri}
-                    recursiveMode={recursiveMode}
                     classifications={classifications}
                     setClassifications={setClassifications}
                     domains={domains}
@@ -82,7 +80,6 @@ function BsddSearch(props: Props) {
                     classifications={classifications}
                     propertySets={propertySets}
                     setPropertySets={setPropertySets}
-                    recursiveMode={recursiveMode}
                   />
                 </Accordion.Body>
               </Accordion.Item>

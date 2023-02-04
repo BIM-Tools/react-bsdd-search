@@ -2,19 +2,19 @@ import { useEffect, Children } from 'react'
 import { Accordion } from 'react-bootstrap'
 import { ClassificationContractV4, ClassificationPropertyContractV3 } from './BsddApi'
 import Property from './Property'
+import { useRecoilValue } from 'recoil'
+import { recursiveModeState } from './BsddAtoms'
 
 interface Props {
   classifications: ClassificationContractV4[]
   propertySets: { [id: string]: IfcPropertySet }
   setPropertySets: (value: { [id: string]: IfcPropertySet }) => void
-  recursiveMode: boolean
 }
-
 function PropertySets(props: Props) {
   const classifications: ClassificationContractV4[] = props.classifications
   const propertySets: { [id: string]: IfcPropertySet } = props.propertySets
   const setPropertySets: (value: { [id: string]: IfcPropertySet }) => void = props.setPropertySets
-  const recursiveMode: boolean = props.recursiveMode
+  const recursiveMode: boolean = useRecoilValue(recursiveModeState)
 
   function GetIfcPropertyValue(dataType: string | undefined | null, predefinedValue: any): IfcValue {
     switch (dataType) {

@@ -7,7 +7,6 @@ api.baseUrl = 'https://test.bsdd.buildingsmart.org'
 
 interface Props {
   activeClassificationUri: string | undefined
-  recursiveMode: boolean
   classifications: ClassificationContractV4[]
   setClassifications: (value: ClassificationContractV4[]) => void
   domains: { [id: string]: DomainContractV3 }
