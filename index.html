@@ -31,6 +31,7 @@
     }
 
     const config = {
+      baseUrl: 'https://test.bsdd.buildingsmart.org',
       defaultDomains: [
         {
           value:
@@ -38,6 +39,11 @@
           label: "VolkerWessels Bouw & Vastgoed",
         },
       ],
+      defaultSearch: {
+        value:
+          'https://identifier.buildingsmart.org/uri/digibase/volkerwesselsbv-0.1/class/vloer_beton_kanaalplaat_geisoleerd',
+        label: 'vloer_beton_kanaalplaat_geisoleerd',
+      },
     };
 
     const root = document.getElementById("bsdd");
@@ -45,7 +51,7 @@
   </script>
   <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://cdn.jsdelivr.net/npm/react-bsdd-search@0.2.2/dist/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-bsdd-search@0.3.0/react-bsdd-search.umd.cjs"></script>
 </body>
 
 </html>
